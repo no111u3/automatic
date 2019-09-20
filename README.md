@@ -1,0 +1,2 @@
+# automatic
+FSM for programms
