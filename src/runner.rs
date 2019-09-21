@@ -9,9 +9,7 @@ struct Runner {
 impl Runner {
     pub fn new<S: AsRef<OsStr>>(cmd: S, args: Vec<S>) -> Runner {
         let mut cmd = Command::new(cmd);
-        for arg in args {
-            cmd.arg(arg);
-        }
+        cmd.args(args);
 
         Runner { cmd }
     }
