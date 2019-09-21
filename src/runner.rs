@@ -1,6 +1,6 @@
 use std::ffi::OsStr;
 use std::io;
-use std::process::{Command, Output};
+use std::process::{Child, Command, Output};
 
 struct Runner {
     cmd: Command,
@@ -18,6 +18,10 @@ impl Runner {
 
     pub fn run(&mut self) -> io::Result<Output> {
         self.cmd.output()
+    }
+
+    pub fn run_async(&mut self) -> io::Result<Child> {
+        self.cmd.spawn()
     }
 }
 
@@ -46,5 +50,36 @@ mod tests {
             .run()
             .expect("failed to execute process");
         assert!(!result.status.success());
+    }
+
+    #[test]
+    fn create_async() {
+        let result = Runner::new("true", vec![])
+            .run_async()
+            .expect("failed to execute process")
+            .wait()
+            .expect("failed to wait");
+        assert!(result.success());
+
+        let result = Runner::new("true", vec!["1", "2", "3"])
+            .run_async()
+            .expect("failed to execute process")
+            .wait()
+            .expect("failed to wait");
+        assert!(result.success());
+
+        let result = Runner::new("false", vec![])
+            .run_async()
+            .expect("failed to execute process")
+            .wait()
+            .expect("failed to wait");
+        assert!(!result.success());
+
+        let result = Runner::new("false", vec!["1", "2", "3"])
+            .run_async()
+            .expect("failed to execute process")
+            .wait()
+            .expect("failed to wait");
+        assert!(!result.success());
     }
 }
