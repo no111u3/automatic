@@ -1,6 +1,34 @@
 use std::ffi::OsStr;
-use std::io;
-use std::process::{Child, Command, Output};
+use std::io::{self, Read, Write};
+use std::process::{
+    Child, ChildStderr, ChildStdin, ChildStdout, Command, ExitStatus, Output, Stdio,
+};
+
+struct Runned {
+    process: Child,
+}
+
+impl Runned {
+    pub fn wait(&mut self) -> io::Result<ExitStatus> {
+        match self.process.try_wait() {
+            Ok(Some(status)) => Ok(status),
+            Ok(None) => self.process.wait(),
+            Err(e) => Err(e),
+        }
+    }
+
+    pub fn get_stdin(&mut self) -> Option<ChildStdin> {
+        self.process.stdin.take()
+    }
+
+    pub fn get_stdout(&mut self) -> Option<ChildStdout> {
+        self.process.stdout.take()
+    }
+
+    pub fn get_stderr(&mut self) -> Option<ChildStderr> {
+        self.process.stderr.take()
+    }
+}
 
 struct Runner {
     cmd: Command,
@@ -9,6 +37,9 @@ struct Runner {
 impl Runner {
     pub fn new<S: AsRef<OsStr>>(cmd: S, args: Vec<S>) -> Runner {
         let mut cmd = Command::new(cmd);
+        cmd.stdin(Stdio::piped());
+        cmd.stdout(Stdio::piped());
+        cmd.stderr(Stdio::piped());
         cmd.args(args);
 
         Runner { cmd }
@@ -18,8 +49,10 @@ impl Runner {
         self.cmd.output()
     }
 
-    pub fn run_async(&mut self) -> io::Result<Child> {
-        self.cmd.spawn()
+    pub fn run_async(&mut self) -> Runned {
+        Runned {
+            process: self.cmd.spawn().expect("failed to execute process"),
+        }
     }
 }
 
@@ -54,30 +87,48 @@ mod tests {
     fn create_async() {
         let result = Runner::new("true", vec![])
             .run_async()
-            .expect("failed to execute process")
             .wait()
             .expect("failed to wait");
         assert!(result.success());
 
         let result = Runner::new("true", vec!["1", "2", "3"])
             .run_async()
-            .expect("failed to execute process")
             .wait()
             .expect("failed to wait");
         assert!(result.success());
 
         let result = Runner::new("false", vec![])
             .run_async()
-            .expect("failed to execute process")
             .wait()
             .expect("failed to wait");
         assert!(!result.success());
 
         let result = Runner::new("false", vec!["1", "2", "3"])
             .run_async()
-            .expect("failed to execute process")
             .wait()
             .expect("failed to wait");
         assert!(!result.success());
+    }
+
+    #[test]
+    fn std_in_out() {
+        let mut r_async = Runner::new("cat", vec![]).run_async();
+        {
+            let mut input = r_async.get_stdin().unwrap();
+            write!(input, "{}", 123456).expect("failed in write to pipe");
+        }
+        let mut output = r_async.get_stdout().unwrap();
+        let mut line = String::new();
+        output
+            .read_to_string(&mut line)
+            .expect("failed in read to string");
+        assert_eq!(line, "123456");
+
+        let mut error = r_async.get_stderr().unwrap();
+        let mut line = String::new();
+        error
+            .read_to_string(&mut line)
+            .expect("failed in read to string");
+        assert_eq!(line, "");
     }
 }
