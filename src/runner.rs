@@ -1,10 +1,10 @@
 use std::ffi::OsStr;
-use std::io::{self, Read, Write};
+use std::io;
 use std::process::{
     Child, ChildStderr, ChildStdin, ChildStdout, Command, ExitStatus, Output, Stdio,
 };
 
-struct Runned {
+pub struct Runned {
     process: Child,
 }
 
@@ -30,7 +30,7 @@ impl Runned {
     }
 }
 
-struct Runner {
+pub struct Runner {
     cmd: Command,
 }
 
@@ -58,6 +58,8 @@ impl Runner {
 
 #[cfg(test)]
 mod tests {
+    use std::io::{Read, Write};
+
     use super::*;
 
     #[test]
