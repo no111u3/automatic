@@ -1,6 +1,6 @@
 use std::ffi::OsStr;
-use std::io;
-use std::process::{
+pub use std::io;
+pub use std::process::{
     Child, ChildStderr, ChildStdin, ChildStdout, Command, ExitStatus, Output, Stdio,
 };
 
