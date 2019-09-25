@@ -35,7 +35,7 @@ pub struct Runner {
 }
 
 impl Runner {
-    pub fn new<S: AsRef<OsStr>>(cmd: S, args: Vec<S>) -> Runner {
+    pub fn new<S: AsRef<OsStr>>(cmd: S, args: Vec<S>) -> Self {
         let mut cmd = Command::new(cmd);
         cmd.stdin(Stdio::piped());
         cmd.stdout(Stdio::piped());
@@ -43,6 +43,21 @@ impl Runner {
         cmd.args(args);
 
         Runner { cmd }
+    }
+
+    pub fn set_stdin<T: Into<Stdio>>(&mut self, stdin: T) -> &mut Self {
+        self.cmd.stdin(stdin);
+        self
+    }
+
+    pub fn set_stdout<T: Into<Stdio>>(&mut self, stdout: T) -> &mut Self {
+        self.cmd.stdout(stdout);
+        self
+    }
+
+    pub fn set_stderr<T: Into<Stdio>>(&mut self, stderr: T) -> &mut Self {
+        self.cmd.stderr(stderr);
+        self
     }
 
     pub fn run(&mut self) -> io::Result<Output> {
@@ -120,6 +135,34 @@ mod tests {
             write!(input, "{}", 123456).expect("failed in write to pipe");
         }
         let mut output = r_async.get_stdout().unwrap();
+        let mut line = String::new();
+        output
+            .read_to_string(&mut line)
+            .expect("failed in read to string");
+        assert_eq!(line, "123456");
+
+        let mut error = r_async.get_stderr().unwrap();
+        let mut line = String::new();
+        error
+            .read_to_string(&mut line)
+            .expect("failed in read to string");
+        assert_eq!(line, "");
+    }
+
+    #[test]
+    fn std_pipeline() {
+        let mut r_async = Runner::new("cat", vec![]).run_async();
+        {
+            let mut input = r_async.get_stdin().unwrap();
+            write!(input, "{}", 123456).expect("failed in write to pipe");
+        }
+
+        let mut r_async_two = Runner::new("cat", vec![])
+            .set_stdin(r_async.get_stdout().unwrap())
+            .run_async();
+
+        let mut output = r_async_two.get_stdout().unwrap();
+
         let mut line = String::new();
         output
             .read_to_string(&mut line)
