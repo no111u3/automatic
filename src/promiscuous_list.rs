@@ -11,8 +11,8 @@ impl PromiscousList {
 
     pub fn run(&self) -> Result<(), String> {
         for item in self.items.iter() {
-            if let Err(e)  = item.run() {
-                return Err(format!("{}", e))
+            if let Err(e) = item.run() {
+                return Err(format!("{}", e));
             }
         }
         Ok(())
