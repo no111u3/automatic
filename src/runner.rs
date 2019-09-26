@@ -132,7 +132,7 @@ mod tests {
         let mut r_async = Runner::new("cat", vec![]).run_async();
         {
             let mut input = r_async.get_stdin().unwrap();
-            write!(input, "{}", 123456).expect("failed in write to pipe");
+            write!(input, "123456").expect("failed in write to pipe");
         }
         let mut output = r_async.get_stdout().unwrap();
         let mut line = String::new();
@@ -154,7 +154,7 @@ mod tests {
         let mut r_async = Runner::new("cat", vec![]).run_async();
         {
             let mut input = r_async.get_stdin().unwrap();
-            write!(input, "{}", 123456).expect("failed in write to pipe");
+            write!(input, "123456").expect("failed in write to pipe");
         }
 
         let mut r_async_two = Runner::new("cat", vec![])
