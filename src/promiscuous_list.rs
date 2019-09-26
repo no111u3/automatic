@@ -1,5 +1,6 @@
 use crate::runitem::RunItem;
 
+#[derive(Debug, PartialEq)]
 pub struct PromiscousList {
     items: Vec<RunItem>,
 }

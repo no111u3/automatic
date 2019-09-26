@@ -1,5 +1,6 @@
 use crate::runner::{io, Output, Runned, Runner};
 
+#[derive(Debug, PartialEq)]
 pub struct RunItem {
     name: String,
     args: Vec<String>,
