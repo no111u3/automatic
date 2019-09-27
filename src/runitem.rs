@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::run::{Run, RunStatus};
-use crate::runner::{io, ExitStatus, Output, Runned, Runner};
+use crate::run::{ExitStatus, Run, RunStatus};
+use crate::runner::{self, io, Output, Runned, Runner};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct RunItem {
@@ -23,10 +23,24 @@ pub struct RunItemStatus {
     status: io::Result<Output>,
 }
 
+pub struct StatusHelper {
+    status: runner::ExitStatus,
+}
+
+impl ExitStatus for StatusHelper {
+    fn success(&self) -> bool {
+        self.status.success()
+    }
+
+    fn code(&self) -> Option<i32> {
+        self.status.code()
+    }
+}
+
 impl RunStatus for RunItemStatus {
-    fn status(&self) -> Result<ExitStatus, String> {
+    fn status(&self) -> Result<Box<dyn ExitStatus>, String> {
         match &self.status {
-            Ok(ok) => Ok(ok.status),
+            Ok(ok) => Ok(Box::new(StatusHelper { status: ok.status })),
             Err(e) => Err(format!("{}", e)),
         }
     }
