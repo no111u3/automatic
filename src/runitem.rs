@@ -1,6 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::runner::{io, Output, Runned, Runner};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct RunItem {
     name: String,
     args: Vec<String>,
