@@ -19,11 +19,11 @@ impl RunItem {
     }
 }
 
-pub struct RunItemStatus {
+struct RunItemStatus {
     status: io::Result<Output>,
 }
 
-pub struct StatusHelper {
+struct StatusHelper {
     status: runner::ExitStatus,
 }
 

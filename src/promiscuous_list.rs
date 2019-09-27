@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::run::Run;
+use crate::run::{ExitStatus, Run, RunStatus};
 use crate::runitem::RunItem;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -13,13 +13,38 @@ impl PromiscousList {
         Self { items }
     }
 
-    pub fn run(&self) -> Result<(), String> {
+    pub fn run_internal(&self) -> Result<(), String> {
         for item in self.items.iter() {
             if let Err(e) = item.run().status() {
-                return Err(format!("{}", e));
+                return Err(e.to_string());
             }
         }
         Ok(())
+    }
+}
+
+struct StatusHelper {}
+
+impl ExitStatus for StatusHelper {}
+
+struct RunItemStatus {
+    status: Result<(), String>,
+}
+
+impl RunStatus for RunItemStatus {
+    fn status(&self) -> Result<Box<dyn ExitStatus>, String> {
+        match &self.status {
+            Ok(_) => Ok(Box::new(StatusHelper {})),
+            Err(e) => Err(e.to_string()),
+        }
+    }
+}
+
+impl Run for PromiscousList {
+    fn run(&self) -> Box<dyn RunStatus> {
+        Box::new(RunItemStatus {
+            status: self.run_internal(),
+        })
     }
 }
 
@@ -37,8 +62,11 @@ mod tests {
             RunItem::new("true".to_string(), vec![]),
         ];
 
-        let runner = PromiscousList::new(items);
-        assert_eq!(runner.run(), Ok(()));
+        let result = PromiscousList::new(items)
+            .run()
+            .status()
+            .expect("failed to execute process");
+        assert!(result.success());
     }
 
     #[test]
@@ -51,7 +79,7 @@ mod tests {
 
         let runner = PromiscousList::new(items);
         assert_eq!(
-            runner.run(),
+            runner.run().status(),
             Err("No such file or directory (os error 2)".to_string())
         );
     }
