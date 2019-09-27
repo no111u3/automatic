@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::runner::{io, Output, Runned, Runner};
+use crate::run::{Run, RunStatus};
+use crate::runner::{io, ExitStatus, Output, Runned, Runner};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct RunItem {
@@ -13,12 +14,29 @@ impl RunItem {
         Self { name, args }
     }
 
-    pub fn run(&self) -> io::Result<Output> {
-        Runner::new(self.name.clone(), self.args.clone()).run()
-    }
-
     pub fn run_async(&self) -> Runned {
         Runner::new(self.name.clone(), self.args.clone()).run_async()
+    }
+}
+
+pub struct RunItemStatus {
+    status: io::Result<Output>,
+}
+
+impl RunStatus for RunItemStatus {
+    fn status(&self) -> Result<ExitStatus, String> {
+        match &self.status {
+            Ok(ok) => Ok(ok.status),
+            Err(e) => Err(format!("{}", e)),
+        }
+    }
+}
+
+impl Run for RunItem {
+    fn run(&self) -> Box<dyn RunStatus> {
+        Box::new(RunItemStatus {
+            status: Runner::new(self.name.clone(), self.args.clone()).run(),
+        })
     }
 }
 
@@ -30,8 +48,9 @@ mod tests {
     fn create() {
         let result = RunItem::new("true".to_string(), vec![])
             .run()
+            .status()
             .expect("failed to execute process");
-        assert!(result.status.success());
+        assert!(result.success());
 
         let result = RunItem::new(
             "true".to_string(),
@@ -42,8 +61,9 @@ mod tests {
                 .collect(),
         )
         .run()
+        .status()
         .expect("failed to execute process");
-        assert!(result.status.success());
+        assert!(result.success());
     }
 
     #[test]

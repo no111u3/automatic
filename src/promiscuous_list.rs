@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+use crate::run::Run;
 use crate::runitem::RunItem;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -14,7 +15,7 @@ impl PromiscousList {
 
     pub fn run(&self) -> Result<(), String> {
         for item in self.items.iter() {
-            if let Err(e) = item.run() {
+            if let Err(e) = item.run().status() {
                 return Err(format!("{}", e));
             }
         }
