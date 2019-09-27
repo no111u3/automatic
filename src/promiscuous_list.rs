@@ -13,7 +13,7 @@ impl PromiscousList {
         Self { items }
     }
 
-    pub fn run_internal(&self) -> Result<(), String> {
+    fn run_internal(&self) -> Result<(), String> {
         for item in self.items.iter() {
             if let Err(e) = item.run().status() {
                 return Err(e.to_string());
