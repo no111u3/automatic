@@ -10,6 +10,14 @@ pub enum List {
     Promiscous(PromiscousList),
 }
 
+impl List {
+    pub fn get_runner(&self) -> PromiscousList {
+        match self {
+            List::Promiscous(list) => list.clone(),
+        }
+    }
+}
+
 pub struct Script {
     path: PathBuf,
 }
@@ -44,6 +52,8 @@ impl Script {
 #[cfg(test)]
 mod tests {
     use std::path::PathBuf;
+
+    use crate::runitem::RunItem;
 
     use super::*;
 
@@ -82,5 +92,39 @@ mod tests {
         let decoded: List = serde_yaml::from_str(&encoded).unwrap();
 
         assert_eq!(decoded, item);
+
+        let items = List::Promiscous(PromiscousList::new(vec![
+            RunItem::new("true".to_string(), vec![]),
+            RunItem::new("true".to_string(), vec![]),
+            RunItem::new("true".to_string(), vec![]),
+        ]));
+
+        let encoded = serde_yaml::to_string(&items).unwrap();
+
+        assert_eq!(
+            encoded,
+            "---\nPromiscous:\
+             \n  items:\
+             \n    - name: \"true\"\
+             \n      args: []\
+             \n    - name: \"true\"\
+             \n      args: []\
+             \n    - name: \"true\"\
+             \n      args: []"
+                .to_string()
+        );
+
+        let decoded: List = serde_yaml::from_str(&encoded).unwrap();
+
+        assert_eq!(decoded, items);
+    }
+
+    #[test]
+    fn test_run_script() {
+        let script = Script::new(PathBuf::from("tests/test_script_for_run.yaml"));
+
+        let runner = script.parse().unwrap().get_runner();
+
+        assert_eq!(runner.run(), Ok(()));
     }
 }

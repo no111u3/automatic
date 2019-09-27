@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::runitem::RunItem;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct PromiscousList {
     items: Vec<RunItem>,
 }

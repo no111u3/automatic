@@ -1,0 +1,9 @@
+---
+Promiscous:
+  items:
+    - name: "true"
+      args: []
+    - name: "true"
+      args: []
+    - name: "true"
+      args: []

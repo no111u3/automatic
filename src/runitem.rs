@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::runner::{io, Output, Runned, Runner};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
 pub struct RunItem {
     name: String,
     args: Vec<String>,
