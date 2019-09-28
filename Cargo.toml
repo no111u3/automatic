@@ -1,6 +1,6 @@
 [package]
 name = "automatic"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Boris Vinogradov <no111u3@gmail.com>"]
 description = "FSM for programms"
 edition = "2018"
