@@ -1,3 +1,5 @@
+//! Collect run parameters and run command
+
 use serde::{Deserialize, Serialize};
 
 use crate::run::{ExitStatus, Run, RunStatus};

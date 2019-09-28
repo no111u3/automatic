@@ -1,3 +1,5 @@
+//! Promiscous run items, no output but aborts if one fail
+
 use serde::{Deserialize, Serialize};
 
 use crate::run::{ExitStatus, Run, RunStatus};

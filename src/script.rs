@@ -1,3 +1,5 @@
+//! Yaml script parser and run items list collector
+
 use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::prelude::*;

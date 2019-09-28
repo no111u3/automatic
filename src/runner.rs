@@ -1,3 +1,5 @@
+//! Run command item with OS defined wrappers
+
 use std::ffi::OsStr;
 pub use std::io;
 pub use std::process::{
