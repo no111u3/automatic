@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::run::{ExitStatus, Run, RunStatus, RunMap};
+use crate::run::{ExitStatus, Run, RunMap, RunStatus};
 use crate::runner::{self, io, Output, Runned, Runner};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -92,7 +92,7 @@ mod tests {
         .expect("failed to execute process");
         assert!(result.success());
     }
-    
+
     #[test]
     fn create_with_output_to_pipe() {
         let (mut reader, writer) = pipe().unwrap();
@@ -105,7 +105,10 @@ mod tests {
 
         let mut output = String::new();
         reader.read_to_string(&mut output).unwrap();
-        assert_eq!(output, "Cargo.lock\nCargo.toml\nLICENSE\nREADME.md\nsrc\ntarget\ntests\n");
+        assert_eq!(
+            output,
+            "Cargo.lock\nCargo.toml\nLICENSE\nREADME.md\nsrc\ntarget\ntests\n"
+        );
     }
 
     #[test]
