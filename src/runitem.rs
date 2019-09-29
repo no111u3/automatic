@@ -66,7 +66,8 @@ impl RunMap<Runner> for RunItem {
 
 #[cfg(test)]
 mod tests {
-    use crate::runner::Stdio;
+    use os_pipe::pipe;
+    use std::io::prelude::*;
 
     use super::*;
 
@@ -93,13 +94,18 @@ mod tests {
     }
     
     #[test]
-    fn create_with_output_to_console() {
-        // TODO: Rewrite in future to buffer for check output
+    fn create_with_output_to_pipe() {
+        let (mut reader, writer) = pipe().unwrap();
+
         let result = RunItem::new("ls".to_string(), vec![])
-            .run_map(|r| r.set_stdout(Stdio::inherit()))
+            .run_map(|r| r.set_stdout(writer))
             .status()
             .expect("failed to execute process");
         assert!(result.success());
+
+        let mut output = String::new();
+        reader.read_to_string(&mut output).unwrap();
+        assert_eq!(output, "Cargo.lock\nCargo.toml\nLICENSE\nREADME.md\nsrc\ntarget\ntests\n");
     }
 
     #[test]
