@@ -52,3 +52,11 @@ pub trait Run {
     /// Synchoniosly run item, return it's run status
     fn run(&self) -> Box<dyn RunStatus>;
 }
+
+/// Run map item trait
+///
+/// Interface for synchoniosly run item with map to it functionality
+pub trait RunMap<T> {
+    /// Synchoniosly run item, with map closure, return it's run status
+    fn run_map<F: FnOnce(&mut T) -> &mut T>(&self, op: F) -> Box<dyn RunStatus>;
+}

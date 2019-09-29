@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::run::{ExitStatus, Run, RunStatus};
+use crate::run::{ExitStatus, Run, RunStatus, RunMap};
 use crate::runner::{self, io, Output, Runned, Runner};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -56,8 +56,18 @@ impl Run for RunItem {
     }
 }
 
+impl RunMap<Runner> for RunItem {
+    fn run_map<F: FnOnce(&mut Runner) -> &mut Runner>(&self, op: F) -> Box<dyn RunStatus> {
+        Box::new(RunItemStatus {
+            status: op(&mut Runner::new(self.name.clone(), self.args.clone())).run(),
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use crate::runner::Stdio;
+
     use super::*;
 
     #[test]
@@ -79,6 +89,16 @@ mod tests {
         .run()
         .status()
         .expect("failed to execute process");
+        assert!(result.success());
+    }
+    
+    #[test]
+    fn create_with_output_to_console() {
+        // TODO: Rewrite in future to buffer for check output
+        let result = RunItem::new("ls".to_string(), vec![])
+            .run_map(|r| r.set_stdout(Stdio::inherit()))
+            .status()
+            .expect("failed to execute process");
         assert!(result.success());
     }
 
