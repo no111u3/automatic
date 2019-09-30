@@ -1,10 +1,10 @@
 [package]
 name = "automatic"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Boris Vinogradov <no111u3@gmail.com>"]
-description = "FSM for programms"
+description = "automatic run command throw user defined scripts"
 edition = "2018"
-keywords = ["automatization"]
+keywords = ["automatization", "utility"]
 repository = "https://github.com/no111u3/automatic"
 readme = "README.md"
 license = "Apache-2.0"

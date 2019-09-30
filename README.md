@@ -20,7 +20,7 @@ Promiscuous:
 
 Than you can run throw command line application:
 
-`automatic -s <your_script_name>`
+`automatic -r <your_script_name>`
 
 `Promiscuous` is promiscuous type of run, no output, no collect any errors, but
 if run anything program was fail - you get an error of run, such as:
