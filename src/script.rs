@@ -6,17 +6,21 @@ use std::io::prelude::*;
 use std::path::PathBuf;
 
 use crate::promiscuous_list::PromiscousList;
+use crate::silent_list::SilentList;
+
 use crate::run::{Run, RunStatus};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum List {
     Promiscous(PromiscousList),
+    Silent(SilentList),
 }
 
 impl Run for List {
     fn run(&self) -> Box<dyn RunStatus> {
         match self {
             List::Promiscous(list) => list.run(),
+            List::Silent(list) => list.run(),
         }
     }
 }
@@ -124,11 +128,18 @@ mod tests {
 
     #[test]
     fn test_run_script() {
-        let script = Script::new(PathBuf::from("tests/test_script_for_run.yaml"));
+        let items = vec![
+            "tests/test_script_for_run.yaml",
+            "tests/test_script_for_run_silent.yaml",
+        ];
 
-        let runner = script.parse().unwrap();
+        for item in items {
+            let script = Script::new(PathBuf::from(item));
 
-        let result = runner.run().status().expect("failed to execute process");
-        assert!(result.success());
+            let runner = script.parse().unwrap();
+
+            let result = runner.run().status().expect("failed to execute process");
+            assert!(result.success());
+        }
     }
 }
