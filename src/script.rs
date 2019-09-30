@@ -28,21 +28,21 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-use crate::promiscuous_list::PromiscousList;
+use crate::promiscuous_list::PromiscuousList;
 use crate::silent_list::SilentList;
 
 use crate::run::{Run, RunStatus};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum List {
-    Promiscous(PromiscousList),
+    Promiscuous(PromiscuousList),
     Silent(SilentList),
 }
 
 impl Run for List {
     fn run(&self) -> Box<dyn RunStatus> {
         match self {
-            List::Promiscous(list) => list.run(),
+            List::Promiscuous(list) => list.run(),
             List::Silent(list) => list.run(),
         }
     }
@@ -107,23 +107,23 @@ mod tests {
 
         assert_eq!(
             right_script.parse(),
-            Ok(List::Promiscous(PromiscousList::new(vec![])))
+            Ok(List::Promiscuous(PromiscuousList::new(vec![])))
         );
     }
 
     #[test]
     fn serde_script() {
-        let item = List::Promiscous(PromiscousList::new(vec![]));
+        let item = List::Promiscuous(PromiscuousList::new(vec![]));
 
         let encoded = serde_yaml::to_string(&item).unwrap();
 
-        assert_eq!(encoded, "---\nPromiscous:\n  items: []".to_string());
+        assert_eq!(encoded, "---\nPromiscuous:\n  items: []".to_string());
 
         let decoded: List = serde_yaml::from_str(&encoded).unwrap();
 
         assert_eq!(decoded, item);
 
-        let items = List::Promiscous(PromiscousList::new(vec![
+        let items = List::Promiscuous(PromiscuousList::new(vec![
             RunItem::new("true".to_string(), vec![]),
             RunItem::new("true".to_string(), vec![]),
             RunItem::new("true".to_string(), vec![]),
@@ -133,7 +133,7 @@ mod tests {
 
         assert_eq!(
             encoded,
-            "---\nPromiscous:\
+            "---\nPromiscuous:\
              \n  items:\
              \n    - name: \"true\"\
              \n      args: []\

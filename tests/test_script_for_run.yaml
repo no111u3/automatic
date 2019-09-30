@@ -1,5 +1,5 @@
 ---
-Promiscous:
+Promiscuous:
   items:
     - name: "true"
       args: []

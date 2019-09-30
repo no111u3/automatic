@@ -2,7 +2,7 @@
 //!
 //! # Example
 //!```
-//!use automatic::promiscuous_list::PromiscousList;
+//!use automatic::promiscuous_list::PromiscuousList;
 //!use automatic::runitem::RunItem;
 //!use automatic::run::Run;
 //!let items = vec![
@@ -11,7 +11,7 @@
 //!    RunItem::new("true".to_string(), vec![]),
 //!];
 //!
-//!let result = PromiscousList::new(items)
+//!let result = PromiscuousList::new(items)
 //!    .run()
 //!    .status()
 //!    .expect("failed to execute process");
@@ -24,11 +24,11 @@ use crate::run::{ExitStatus, Run, RunStatus};
 use crate::runitem::RunItem;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone)]
-pub struct PromiscousList {
+pub struct PromiscuousList {
     items: Vec<RunItem>,
 }
 
-impl PromiscousList {
+impl PromiscuousList {
     pub fn new(items: Vec<RunItem>) -> Self {
         Self { items }
     }
@@ -60,7 +60,7 @@ impl RunStatus for RunItemStatus {
     }
 }
 
-impl Run for PromiscousList {
+impl Run for PromiscuousList {
     fn run(&self) -> Box<dyn RunStatus> {
         Box::new(RunItemStatus {
             status: self.run_internal(),
@@ -82,7 +82,7 @@ mod tests {
             RunItem::new("true".to_string(), vec![]),
         ];
 
-        let result = PromiscousList::new(items)
+        let result = PromiscuousList::new(items)
             .run()
             .status()
             .expect("failed to execute process");
@@ -97,7 +97,7 @@ mod tests {
             RunItem::new("true".to_string(), vec![]),
         ];
 
-        let runner = PromiscousList::new(items);
+        let runner = PromiscuousList::new(items);
         assert_eq!(
             runner.run().status(),
             Err("No such file or directory (os error 2)".to_string())
