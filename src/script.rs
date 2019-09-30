@@ -1,4 +1,27 @@
 //! Yaml script parser and run items list collector
+//!
+//! # Example
+//!```
+//!use std::path::PathBuf;
+//!
+//!use automatic::script::Script;
+//!use automatic::run::Run;
+//!
+//!let items = vec![
+//!    "tests/test_script_for_run.yaml",
+//!    "tests/test_script_for_run_silent.yaml",
+//!];
+//!
+//!for item in items {
+//!    let script = Script::new(PathBuf::from(item));
+//!
+//!    let runner = script.parse().unwrap();
+//!
+//!    let result = runner.run().status().expect("failed to execute process");
+//!    assert!(result.success());
+//!}
+//!```
+
 
 use serde::{Deserialize, Serialize};
 use std::fs::File;

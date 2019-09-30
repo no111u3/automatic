@@ -1,4 +1,14 @@
 //! Run command item with OS defined wrappers
+//!
+//! # Example
+//!```
+//!use automatic::runner::Runner;
+//!
+//!let result = Runner::new("true", vec![])
+//!    .run()
+//!    .expect("failed to execute process");
+//!assert!(result.status.success());
+//!```
 
 use std::ffi::OsStr;
 pub use std::io;

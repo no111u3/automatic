@@ -1,4 +1,16 @@
 //! Collect run parameters and run command
+//!
+//! # Example
+//!```
+//!use automatic::runitem::RunItem;
+//!use automatic::run::Run;
+//!
+//!let result = RunItem::new("true".to_string(), vec![])
+//!    .run()
+//!    .status()
+//!    .expect("failed to execute process");
+//!assert!(result.success());
+//!```
 
 use serde::{Deserialize, Serialize};
 

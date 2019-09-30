@@ -1,4 +1,22 @@
 //! Promiscous run items, no output but aborts if one fail
+//!
+//! # Example
+//!```
+//!use automatic::promiscuous_list::PromiscousList;
+//!use automatic::runitem::RunItem;
+//!use automatic::run::Run;
+//!let items = vec![
+//!    RunItem::new("true".to_string(), vec![]),
+//!    RunItem::new("true".to_string(), vec![]),
+//!    RunItem::new("true".to_string(), vec![]),
+//!];
+//!
+//!let result = PromiscousList::new(items)
+//!    .run()
+//!    .status()
+//!    .expect("failed to execute process");
+//!assert!(result.success());
+//!```
 
 use serde::{Deserialize, Serialize};
 

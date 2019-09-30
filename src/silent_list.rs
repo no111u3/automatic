@@ -1,4 +1,22 @@
 //! Silent run items, no output but aborts if one fail start or fail exit
+//!
+//! # Example
+//!```
+//!use automatic::silent_list::SilentList;
+//!use automatic::runitem::RunItem;
+//!use automatic::run::Run;
+//!let items = vec![
+//!    RunItem::new("true".to_string(), vec![]),
+//!    RunItem::new("true".to_string(), vec![]),
+//!    RunItem::new("true".to_string(), vec![]),
+//!];
+//!
+//!let result = SilentList::new(items)
+//!    .run()
+//!    .status()
+//!    .expect("failed to execute process");
+//!assert!(result.success());
+//!```
 
 use serde::{Deserialize, Serialize};
 
