@@ -1,5 +1,5 @@
 # Automatic
-`automatic` run command throw user defined scripts
+`automatic` runs command through user defined scripts
 
 Commands collect to run items in run list.
 
