@@ -1,8 +1,8 @@
 [package]
 name = "automatic"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Boris Vinogradov <no111u3@gmail.com>"]
-description = "automatic run command throw user defined scripts"
+description = "automatic runs command through user defined scripts"
 edition = "2018"
 keywords = ["automatization", "utility"]
 repository = "https://github.com/no111u3/automatic"
