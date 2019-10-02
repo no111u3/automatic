@@ -27,6 +27,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
+use crate::interactive_list::InteractiveList;
 use crate::promiscuous_list::PromiscuousList;
 use crate::silent_list::SilentList;
 
@@ -34,6 +35,7 @@ use crate::run::{Run, RunStatus};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum List {
+    Interactive(InteractiveList),
     Promiscuous(PromiscuousList),
     Silent(SilentList),
 }
@@ -41,6 +43,7 @@ pub enum List {
 impl Run for List {
     fn run(&self) -> Box<dyn RunStatus> {
         match self {
+            List::Interactive(list) => list.run(),
             List::Promiscuous(list) => list.run(),
             List::Silent(list) => list.run(),
         }
@@ -153,6 +156,7 @@ mod tests {
         let items = vec![
             "tests/test_script_for_run.yaml",
             "tests/test_script_for_run_silent.yaml",
+            "tests/test_script_for_run_interactive.yaml",
         ];
 
         for item in items {

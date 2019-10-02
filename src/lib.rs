@@ -3,6 +3,7 @@
 //!
 //! Commands collect to run items in run list.
 
+pub mod interactive_list;
 pub mod promiscuous_list;
 pub mod silent_list;
 

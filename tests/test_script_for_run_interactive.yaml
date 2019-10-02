@@ -1,0 +1,9 @@
+---
+Interactive:
+  items:
+    - name: "echo"
+      args: ["Hello greeting"]
+    - name: "ls"
+      args: ["."]
+    - name: "true"
+      args: []
