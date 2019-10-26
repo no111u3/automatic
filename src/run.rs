@@ -21,7 +21,7 @@ pub trait ExitStatus {
 }
 
 impl fmt::Debug for dyn ExitStatus {
-    fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(
             fmt,
             "success: {}, code: {}",
